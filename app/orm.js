@@ -1,4 +1,6 @@
 const mysql = require("mysql");
+// an external npm package we are using
+const moment = require("moment")
 
 class Database {
   constructor( config ) {
@@ -33,24 +35,28 @@ const db = new Database({
   insecureAuth : true
 });
 
-function selectList( criteria={} ){
-    return db.query( "SELECT * FROM list "+( criteria ? "WHERE ? " : "" ), criteria )
+function getList( criteria={} ){
+    return db.query( "SELECT * FROM tasks "+( criteria ? "WHERE ? " : "" ), criteria )
 }
 
-function insertItem( name ){
-    return db.query( "INSERT INTO list SET ? ", 
-        { name, complete: false } )
+function insertTask( priority, info, due ){
+    if( priority=='' ) priority = 'primary'
+    // no due? set to 7 days from now
+    if( due=='' ) due = moment().add(7, 'days').format("YYYY-MM-DD" )
+    console.log( ` inserting task data: `, { priority, info, due } )
+    return db.query( "INSERT INTO tasks SET ? ", 
+        { priority, info, due } )
 }
 
-function updateItem( id, field, value ){
-    return db.query( "UPDATE list SET ? WHERE id=?", 
-        [ { [field]: value}, id ] )
+function updateTask( id, priority, info, due ){
+    return db.query( "UPDATE tasks SET ? WHERE id=?", 
+        [ { priority, info, due }, id ] )
 }
 
-function deleteItem( id ){
-    return db.query( "DELETE FROM list WHERE id=?", [ id ] )
+function deleteTask( id ){
+    return db.query( "DELETE FROM tasks WHERE id=?", [ id ] )
 }
 
 module.exports = {
-    insertItem, insertItem, updateItem, deleteItem
+    getList, insertTask, updateTask, deleteTask
 }

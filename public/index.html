@@ -6,9 +6,18 @@
     <title>Project #2</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+
     <link rel="stylesheet" href="./assets/style.css">
+    <script src="./assets/script.js" ></script>
+
+    <!-- any NPM packages you want to include, you can directly include like this -->
+    <script src="https://unpkg.com/moment"></script>
 </head>
-<body>
+
+<!-- we will start the app when this page is loaded by running it with onLoad... -->
+<body onLoad="mainApp()">
     <div class="container"> 
         <img id="logo" src="./assets/logo.png" class="float-left" />
         <h1>Project #2</h1>
@@ -21,10 +30,10 @@
                         <i class="fa fa-tasks"></i>&nbsp;Task Lists
                     </div>
                     <div class="card-body">
-                        <ul class="list-group list-group-flush">
+                        <ul id="list" class="list-group list-group-flush">
+                            <!-- sample HTML for initial build, overwritten by the JS -->
                             <li class="list-group-item">
                                 <div class="float-right p-0">
-                                    <button class="border-0 btn-transition btn btn-outline-success"> <i class="fa fa-check"></i></button> 
                                     <button class="border-0 btn-transition btn btn-outline-danger"> <i class="fa fa-trash"></i> </button>
                                 </div>
                                 <div class="todo-indicator bg-warning"></div>
@@ -34,7 +43,6 @@
 
                             <li class="list-group-item">
                                 <div class="float-right">
-                                    <button class="border-0 btn-transition btn btn-outline-success"> <i class="fa fa-check"></i></button> 
                                     <button class="border-0 btn-transition btn btn-outline-danger"> <i class="fa fa-trash"></i> </button>
                                 </div>
                                 <div class="todo-indicator bg-success"></div>
@@ -43,7 +51,38 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="d-block text-right card-footer"><button class="mr-2 btn btn-secondary-outline btn-sm">Toggle Completed</button><button class="btn btn-primary">Add Task</button></div>
+                    <div id='apiMessage' class="alert alert-success d-none"></div>
+                    <div class="d-block text-right card-footer"><button class="mr-2 btn btn-secondary-outline btn-sm">Toggle Completed</button><button onClick="toggleTaskForm()" class="btn btn-primary">Add Task</button></div>
+                </div>
+
+                <div id='taskForm' class="card d-none">
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="taskInfo">Task</label>
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <select class="form-control" id="taskPriority">
+                                            <option value="">.. Priority ..</option>
+                                            <option value="danger">Important</option>
+                                            <option value="primary">Normal</option>
+                                            <option value="secondary">Optional</option>
+                                        </select>                                        
+                                    </div>
+                                    <input class="form-control" id="taskInfo">
+                                </div>                              
+                            </div>
+                            <div class="form-group">
+                              <label for="taskDue">Due Date</label>
+                              <input type="date" class="form-control" id="taskDue">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="d-block text-right card-footer">
+                        <button class="mr-2 btn btn-secondary-outline btn-sm">Cancel</button>
+                        <button onClick="saveForm(event)" class="btn btn-primary">Save Task</button>
+                    </div>
                 </div>
             </div>
         </div>
