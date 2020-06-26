@@ -63,6 +63,8 @@ async function taskList( due='' ){
 async function taskDelete( id ){
     const deleteResponse = await apiCall( `/api/tasks/${id}`, 'delete' )
     console.log( `[taskDelete] `, deleteResponse )
+
+    taskList()
 }
 
 async function saveForm( event ){
@@ -73,7 +75,10 @@ async function saveForm( event ){
         info: document.querySelector('#taskInfo').value,
         due: document.querySelector('#taskDue').value
     }
-
+    // clear form
+    document.querySelector('#taskPriority').value = ''
+    document.querySelector('#taskInfo').value = ''
+    document.querySelector('#taskDue').value = ''
     console.log( `[saveForm] formData=`, formData )
 
     const saveResponse = await apiCall( '/api/tasks', 'post', formData )
