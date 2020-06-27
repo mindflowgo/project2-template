@@ -16,8 +16,14 @@ DB_NAME=(db-name)
 DB_USER=(db-user)
 DB_PWD=(db-password)
 
-## Run
+## Run Locally
 node server.js
+
+open browser to http://localhost:8080
+
+## Deployment to Heroku
+You will need to configure environmental variables for the .env above to correspond to your 
+jawsDB.
 
 ## Stylistic Notes
 This code has been written towards keeping it clean and simple, yet self-explanatory.
