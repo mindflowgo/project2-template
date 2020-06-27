@@ -1,7 +1,7 @@
 require( 'dotenv' ).config() // looks for .env ; process.env gets it's values
 
-const express = require("express")
-const apiRouter = require("./app/router")
+const express = require('express')
+const apiRouter = require('./app/router')
 const app = express()
 
 const PORT = process.env.PORT || 8080
