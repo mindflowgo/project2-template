@@ -6,15 +6,16 @@ You need to create the database and setup the .env to run this.
 You may also need to do an npm install...
 
 ### Create Database
-mysql -u root -p{your-db-password} < docs/schema.sql
+Use mysql_workbench OR:
 
-mysql -u root -p{your-db-password} < docs/seed.sql
+mysql -u root -p{your-db-password} tasks < docs/schema.sql
 
-### Configure .env
-Create a .env file and put in these elements
-DB_NAME=(db-name)
-DB_USER=(db-user)
-DB_PWD=(db-password)
+mysql -u root -p{your-db-password} tasks < docs/seed.sql
+
+### Adjust .env
+!IMPORTANT Please change the password in .env for DB_PWD:
+DB_NAME=tasks
+DB_PWD=(your-db-password)
 
 ## Run Locally
 node server.js

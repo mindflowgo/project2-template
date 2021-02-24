@@ -6,17 +6,17 @@
     note how we wrap our api fetch in this function that allows us to do some
     additional error / message handling for all API calls...
 */
-async function apiCall( url, method='get', data={} ){
-    let settings = {
+async function fetchJSON( url, method='get', data={} ){
+    const fetchOptions = {
         method,
         headers: { 'Content-Type': 'application/json' }
     }
     // only attach the body for put/post
     if( method === 'post' || method === 'put' ) {
-        settings.body = JSON.stringify( data )
+        fetchOptions.body = JSON.stringify( data )
     }
 
-    const result = await fetch( url,settings ).then( res=>res.json() )
+    const result = await fetch( url,fetchOptions ).then( res=>res.json() )
 
     /* put the api result message onto the screen as a message if it exists */
     if( result.status && result.message ){
@@ -35,7 +35,7 @@ async function apiCall( url, method='get', data={} ){
 }
 
 async function taskList( due='' ){
-    const taskList = await apiCall( '/api/tasks' + (due ? `/${due}` : '') )
+    const taskList = await fetchJSON( `/api/tasks/${due}` )
     console.log( `[taskList] due='${due}'`, taskList )
 
     const listEl = document.querySelector('#list')
@@ -56,14 +56,6 @@ async function taskList( due='' ){
 }
 
 /* functions triggered by the html page */
-
-// run once page has loaded
-async function mainApp(){
-    console.log( '[mainApp] starting...' )
-
-    // show the task list ...
-    taskList()
-}
 
 function showTodaysTasks(){
     document.querySelector('#todayTasksBtn').classList.add('d-none')
@@ -92,7 +84,7 @@ function toggleTaskForm( forceHide=false ){
 
 // triggered by the [x] delete button
 async function taskDelete( id ){
-    const deleteResponse = await apiCall( `/api/tasks/${id}`, 'delete' )
+    const deleteResponse = await fetchJSON( `/api/tasks/${id}`, 'delete' )
     console.log( '[taskDelete] ', deleteResponse )
 
     taskList()
@@ -114,7 +106,7 @@ async function saveForm( event ){
     document.querySelector('#taskDue').value = ''
     console.log( '[saveForm] formData=', formData )
 
-    const saveResponse = await apiCall( '/api/tasks', 'post', formData )
+    const saveResponse = await fetchJSON( '/api/tasks', 'post', formData )
     console.log( '[saveResponse] ', saveResponse )
 
     if( saveResponse.status ){
@@ -125,3 +117,8 @@ async function saveForm( event ){
         taskList()
     }
 }
+
+console.log( '[mainApp] starting...' )
+
+// show the task list ...
+taskList()
