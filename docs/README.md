@@ -1,30 +1,29 @@
 # Project #2 Sample Outline
-Please add notes for how to setup your project
+This is a simple project template that has a register page, a login page, 
+and logged-in page that only displays info if an authenticated session 
+detected.
+
+It highlights user registration/login, and RESTful API communications.
 
 ## Installation
 You need to create the database and setup the .env to run this. 
 You may also need to do an npm install...
 
 ### Create Database
-Use mysql_workbench OR:
+Use Mysql Workbench and copy and run each document in it.
 
-mysql -u root -p{your-db-password} tasks < docs/schema.sql
-
-mysql -u root -p{your-db-password} tasks < docs/seed.sql
-
-### Adjust .env
-!IMPORTANT Please change the password in .env for DB_PWD:
-DB_NAME=tasks
-DB_PWD=(your-db-password)
+### Configure .env
+Modify the .env file and put in these elements
+DB_NAME=project
+DB_PWD=(db-password)
 
 ## Run Locally
-node server.js
+npm start
 
-open browser to http://localhost:8080
+open browser to http://localhost:3000
 
 ## Deployment to Heroku
-You will need to configure environmental variables for the .env above to correspond to your 
-jawsDB.
+Add the JawsDB database and verify there is a 'JAWSDB_URL' configuration variable. 
 
 ## Stylistic Notes
 This code has been written towards keeping it clean and simple, yet self-explanatory.
@@ -35,7 +34,5 @@ hence the onClick listeners embedded in the HTML.
 We try to use ES6 async functions for clean handling of asyncronous functions.
 
 We serve RESTful API calls on the backend, as is good modern programming practice.
-
-Finally we illustrate how npm packages can be used on the server and client side (moment.js)
 
 Enjoy! Feel free to use this as a template towards your next project!

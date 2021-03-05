@@ -1,41 +1,66 @@
-const orm = require('./orm');
+const orm = require( './orm' )
+const sessionManager = require( './session-manager' )
+
 
 function router( app ){
-    app.get('/api/tasks/:due?', async function(req, res) {
-        const due = req.params.due ? { due: req.params.due } : ''
-        console.log( `[GET] getting list, due=${due}`)
-        const list = await orm.getList( due )
-
-        res.send( list )
-    })
-
-    app.post('/api/tasks', async function(req, res) {
-        console.log( '[POST] we received this data:', req.body )
-        const saveResult = await orm.insertTask( req.body.priority, req.body.info, req.body.due )
-        console.log( `... insertId: ${saveResult.insertId} ` )
-
-        res.send( { status: true, insertId: saveResult.insertId, message: 'Saved successfully' } )
-    });
-
-    app.put('/api/tasks', async function(req, res) {
-        console.log( '[PUT] we received this data:', req.body )
-        if( !req.body.id ) {
-            res.status(404).send( { message: 'Invalid id' } )
+    app.post('/api/users/register', async function(req, res) {
+        console.log( '[POST] register request:', req.body )
+        let session=''
+        const { status, userData, message }= await orm.userRegister( req.body )
+        if( !status ){
+            res.status(403).send( { status, message } )
+            return
         }
 
-        const saveResult = await orm.updateTask( req.body.id, req.body.priority, req.body.info, req.body.due )
-        console.log( '... ', saveResult )
-        res.send( { status: true, message: 'Updated successfully' } )
-    });
+        // generate a session-key
+        session = sessionManager.create()
+        console.log( `.. registration complete! session: ${session}` )
 
-    app.delete('/api/tasks/:id', async function(req, res) {
-        const taskId = req.params.id
-        console.log( `[DELETE] id=${taskId}` )
-        const deleteResult = await orm.deleteTask( taskId )
-        console.log( '... ', deleteResult )
+        res.send( { status, session, userData, message } )
+    })
 
-        res.send( { status: true, message: 'Deleted successfully' } )
-    });
+    app.post('/api/users/login', async function(req, res) {
+        console.log( '[POST] login request:', req.body )
+        let session=''
+        const { status, userData, message }= await orm.userLogin( req.body.email, req.body.password )
+        if( !status ){
+            res.status(403).send( { status, message } )
+            return
+        }
+
+        // generate a session-key
+        session = sessionManager.create()
+        console.log( `.. login complete! session: ${session}` )
+
+        res.send( { status, session, userData, message } )
+    })
+
+    // all these endpoints require VALID session info
+    app.get('/api/tasks', async function(req, res) {
+        if( !sessionManager.checkValid( req.headers.session ) ){
+            // sorry couldn't find that session!
+            res.status(401).send( { status: false, code: 401, message: 'Sorry invalid session, login first!' })
+            return
+        }
+
+        const tasks = [
+            { name: 'Task 1' },
+            { name: 'Task 2' }
+        ]
+
+        res.send( { status: true, tasks } )
+    })
+
+    app.get('/api/users/logout', async function(req, res) {
+        if( !sessionManager.checkValid( req.headers.session ) ){
+            res.status(401).send( { status: false, message: 'Sorry invalid session, login first!' })
+            return
+        }
+
+        sessionManager.remove( req.header.session )
+        console.log( ` .. removed session ${req.header.session}`)
+        res.send( { status: true, message: 'Logout complete' } )
+    })
 }
 
 module.exports = router

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project #2</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container"> 
+        <h1>Project #2</h1>
+
+        <div class="card">
+            <form id='regForm'>
+            <div class="card-header">
+                <i class="fa fa-tasks"></i>&nbsp;Register
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="login" class="form-label">Login Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="name@example.com" required />
+                    <div class="invalid-feedback">
+                        Please choose a valid email.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Your Name</label>
+                    <input type="text" class="form-control" id="name" placeholder="user name" required />
+                    <div class="invalid-feedback">
+                        Please choose a username.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password"  required />
+                    <div class="invalid-feedback">
+                        Please enter a password
+                    </div>
+                </div>
+            </div>
+            <div id='apiMessage' class="alert alert-success d-none"></div>
+            <div class="d-block text-right card-footer">
+                <a href="/login.html" class="text-muted mr-5"><small>Already Registered? Login.</small></a>
+                <button onClick="register(event)" class="btn btn-primary">Register</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="./assets/script.js" ></script>
+    <!-- individualized interactions for this page -->
+    <script>
+        async function register( event ){
+            event.preventDefault()
+
+            const form = document.querySelector('#regForm')
+            if( !form.checkValidity() ){            
+                // prevent it from submitting
+                event.stopPropagation()
+                form.classList.add('was-validated')
+                return
+            }
+            
+            console.log( `.. user registration appears valid, submitting it...` )
+            form.classList.add('was-validated')
+
+            const userData = {
+                name: document.querySelector('#name').value,
+                email: document.querySelector('#email').value,
+                password: document.querySelector('#password').value
+            }
+
+            const result = await fetchJSON( '/api/users/register', 'post', userData )
+            ifErrorShowAlert( result )
+            
+            if( result.status ){
+                // registration worked, we auto-login too, so save their info
+                localStorage.session = result.session
+                // remember some user-info client-side
+                localStorage.userData = result.userData
+
+                // redirect to main page
+                window.location.replace( '/index.html' )
+            }
+        }
+    </script>
+</body>
+</html>

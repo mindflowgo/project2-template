@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project #2</title>
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css" integrity="sha384-DhY6onE6f3zzKbjUPRc2hOzGAdEf4/Dz+WJwBvEYL/lkkIsI3ihufq9hk9K4lVoK" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container"> 
+        <h1>Project #2</h1>
+
+        <div class="card">
+            <form id="loginForm">
+            <div class="card-header">
+                <i class="fa fa-tasks"></i>&nbsp;Login
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="login" class="form-label">Login Email</label>
+                    <input type="email" class="form-control" id="email" placeholder="name@example.com" required />
+                    <div class="invalid-feedback">
+                        Please enter your login email.
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required />
+                    <div class="invalid-feedback">
+                        Please enter your password!
+                    </div>
+                </div>
+            </div>
+            <div id='apiMessage' class="alert alert-success d-none"></div>
+            <div class="d-block text-right card-footer">
+                <a href="/register.html" class="text-muted mr-5"><small>Register Now</small></a>
+                <button onClick="userLogin(event)" class="btn btn-primary">Login</button>
+            </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="./assets/script.js" ></script>
+    <!-- individualized interactions for this page -->
+    <script>
+        async function userLogin( event ){
+            event.preventDefault()
+
+            const form = document.querySelector('#loginForm')
+            if( !form.checkValidity() ){            
+                // prevent it from submitting
+                console.log( `x sorry login form incomplete` )
+                event.stopPropagation()
+                form.classList.add('was-validated')
+                return
+            }
+
+            const userData = {
+                email: document.querySelector('#email').value,
+                password: document.querySelector('#password').value
+            }
+
+            const result = await fetchJSON( '/api/users/login', 'post', userData )
+            ifErrorShowAlert( result )
+            
+            if( result.status ){
+                // login came back ok, a session-key is also given, let's save it.
+                localStorage.session = result.session
+                // remember some user-info client-side
+                localStorage.userData = result.userData
+
+                // redirect to main page
+                window.location.replace( '/index.html' )
+            }
+        }
+    </script>
+</body>
+</html>

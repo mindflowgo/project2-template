@@ -1,4 +1,4 @@
-USE tasks;
+USE project;
 
-INSERT INTO tasks (priority,info) VALUES ("danger", "Remember the milk");
-INSERT INTO tasks (priority,info,due) VALUES ("primary", "Pay the rent", "2020-07-01" );
+INSERT INTO users (email,password,name) VALUES("test@test.com","test123","Test User");
+INSERT INTO users (email,password,name) VALUES("test2@test2.com","test123","Test2 User");
